@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style>
+    body {
+      background-color: #eef2f5;
+      font-family: Arial, sans-serif;
+      padding: 50px;
+      display: flex;
+      justify-content: center;
+      align-items:center;
+      min-height: 80vh;
+    }
+
+label{
+  display:block;
+  margin-top: 15px;
+  font-weight: bold;
+  color:#1a252f;
+  font-size: 14px;
+
+}
+input,select{
+width: 100%;
+padding: 10px;
+margin-top:5px;
+border-radius: 6px;
+box-sizing: borderbox;
+
+}
+button{
+
+  width:100%;
+  background-color:chartreuse;
+  color: white;
+  border: none;
+  padding: 12px;
+cursor:pointer;
+transition: background-color 0.3s ease;
+}
+button-hover {
+  background-color: aquamarine;
+}
+    .card {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h1 {
+      color: #1a252f;
+      margin-top: 0;
+    }
+
+    p {
+      color: #555555;
+      font-size: 16px;
+    }
+
+    h2 {
+      color: #2c3e50;
+    }
+
+    ul {
+      line-height: 1.8;
+
+
+    ul {
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+    <h2>Online Order Form</h2>
+    
+    <label for="fullname">Full Name:</label>
+    <input type="text" id="fullname" placeholder="Enter your name">
+
+    <label for="orderType">Order Type:</label>
+    <select id="orderType">
+      <option value="Full Jersey">full jersey</option>
+      <option value="Up-only">Up only</option>
+      <option value="Down-only ">Down Only</option>
+    </select>
+
+    <label for="contact">Contact Number:</label>
+    <input type="tel" id="contact" placeholder="09123456789">
+
+    <button type="button" onclick="submitOrder(event)">Submit Order</button>
+  </div>
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPlEl_KkmyZ3LWSJHFUoZTxr2CcbaIQaYH-ap610xtWT_5I5-3LhFD7n8rg0cT9Ufu/exec";
+
+    function submitOrder(event) {
+      // Prevent double triggers
+      if (event) event.preventDefault();
+
+      let btn = document.querySelector("button");
+      let name = document.getElementById("fullname").value;
+      let order = document.getElementById("orderType").value;
+      let phone = document.getElementById("contact").value;
+
+      if (name === "" || phone === "") {
+        alert("Please fill out all fields!");
+        return;
+      }
+
+      // Disable button so customer can't click twice
+      btn.disabled = true;
+      btn.innerText = "Sending...";
+
+      fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          fullname: name,
+          orderType: order,
+          contact: phone
+        })
+      })
+      .then(() => {
+        alert("Thank you, " + name + "!\nYour " + order + " order has been sent!");
+        
+        // Clear input values
+        document.getElementById("fullname").value = "";
+        document.getElementById("contact").value = "";
+      })
+      .catch(error => {
+        alert("Error submitting order. Please try again.");
+        console.error("Error!", error.message);
+      })
+      .finally(() => {
+        // Re-enable button after request finishes
+        btn.disabled = false;
+        btn.innerText = "Submit Order";
+      });
+    }
+  </script>
+</body>
+</html>
